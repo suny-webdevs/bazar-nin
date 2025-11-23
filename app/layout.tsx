@@ -44,7 +44,7 @@ export default function RootLayout({
             <AppSidebar />
             <main className="w-full min-h-screen bg-card scroll-smooth">
               <AppHeader />
-              <div className="container mx-auto p-2">{children}</div>
+              <div className="container mx-auto p-2 py-7">{children}</div>
             </main>
           </SidebarProvider>
         </ThemeProvider>
