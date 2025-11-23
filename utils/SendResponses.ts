@@ -18,9 +18,9 @@ export const ResCreated = async (
   )
 }
 
-export const ResError = async (message: string, error: any) => {
+export const ResError = async (error: any) => {
   return NextResponse.json(
-    { success: false, message, error },
+    { success: false, message: "Something went wrong", error },
     { status: HSC.INTERNAL_SERVER_ERROR }
   )
 }
