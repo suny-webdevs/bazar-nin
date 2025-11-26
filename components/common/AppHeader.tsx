@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { usePathname } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
@@ -11,14 +12,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useSession } from "next-auth/react"
 import { Button } from "../ui/button"
 import Link from "next/link"
 
-const AppHeader = () => {
+const AppHeader = ({ session }: { session: Record<string, any> | null }) => {
   const pathname = usePathname()
-  const { data: session } = useSession()
-
+  console.log({ session })
   return (
     <div className="px-5 py-3 grid grid-cols-12 items-center bg-primary text-white backdrop-blur-xl sticky top-0 left-0 z-50">
       <div className="col-span-10 h-5 flex items-center space-x-4">
@@ -47,12 +46,15 @@ const AppHeader = () => {
         <ModeToggle />
         {!pathname.includes("login") &&
           !pathname.includes("register") &&
-          (session?.user ? (
+          (session ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  {session?.user?.image ? (
+                    <AvatarImage src={session?.user?.image as string} />
+                  ) : (
+                    <AvatarFallback>{session?.user?.name[0]}</AvatarFallback>
+                  )}
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -61,7 +63,9 @@ const AppHeader = () => {
               >
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={"/profile"}>Profile</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Orders</DropdownMenuItem>
                   <DropdownMenuItem>Payment History</DropdownMenuItem>
                   <DropdownMenuItem>Payment Methods</DropdownMenuItem>

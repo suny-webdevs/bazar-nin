@@ -9,12 +9,12 @@ import {
   UseFormProps,
 } from "react-hook-form"
 
-type TFormConfig<T extends FieldValues = FieldValues> = {
+type TFormConfig<T extends FieldValues> = {
   defaultValues?: UseFormProps<T>["defaultValues"]
   resolver?: UseFormProps<T>["resolver"]
 }
 
-type TFormProps<T extends FieldValues = FieldValues> = {
+type TFormProps<T extends FieldValues> = {
   onSubmit: SubmitHandler<T>
   children: ReactNode
   className?: string

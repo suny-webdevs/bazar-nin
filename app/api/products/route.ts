@@ -1,24 +1,40 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/lib/prisma"
-import { ResCreated, ResError, ResOk, UploadFilesToCloudinary } from "@/utils"
+import {
+  ResCreated,
+  ResError,
+  ResGlobal,
+  ResOk,
+  UploadFilesToCloudinary,
+} from "@/utils"
 
 export const POST = async (request: Request) => {
   try {
-    const formData = await request.formData()
+    const form = await request.formData()
 
-    const data = formData.get("data") as string
-    const files = formData.getAll("files") as File[]
+    const rawFiles = form.getAll("files")
+    const files = rawFiles.filter((file): file is File => file instanceof File)
 
-    const payload = JSON.parse(data)
-
-    const photos = await UploadFilesToCloudinary(files)
-
-    const finalPayload = {
-      ...payload,
-      images: [photos[0].secure_url],
-      imagesPublicId: [photos[0].public_id],
+    const rawData = form.get("data")
+    if (!rawData || typeof rawData !== "string") {
+      return ResGlobal(400, false, "Invalid request payload")
     }
 
-    const res = await prisma.product.create({ data: finalPayload })
+    let payload
+
+    try {
+      payload = JSON.parse(rawData)
+    } catch (e: any) {
+      return ResGlobal(400, false, "Invalid JSON body", e)
+    }
+
+    if (files) {
+      const photos = await UploadFilesToCloudinary(files)
+      payload.images = photos.map((photo) => photo.secure_url)
+      payload.imagesPublicId = photos.map((photo) => photo.public_id)
+    }
+
+    const res = await prisma.product.create({ data: payload })
     return ResCreated("Product created successfully", res)
   } catch (error) {
     return ResError(error)

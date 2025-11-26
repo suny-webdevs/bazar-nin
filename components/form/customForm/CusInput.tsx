@@ -30,11 +30,14 @@ const CusInput = ({
         name={name}
         render={({ field }) => (
           <div className="space-y-2">
-            <Label>{label}</Label>
+            <Label className={`${error && "text-red-500"}`}>{label}</Label>
             <Input
               {...field}
               type={type}
               placeholder={placeholder}
+              className={`${
+                error && "focus-visible:ring-red-500 border-red-500"
+              }`}
               {...register(name)}
             />
             {error && <p className="text-sm text-red-500">{error}</p>}

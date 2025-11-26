@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,14 +13,39 @@ import { FieldDescription, FieldGroup } from "@/components/ui/field"
 import Link from "next/link"
 import CusForm from "./customForm/CusForm"
 import CusInput from "./customForm/CusInput"
+import { FieldValues, SubmitHandler } from "react-hook-form"
+import { toast } from "sonner"
+import { fetchPOST } from "@/lib/fetch-data"
+import { useRouter } from "next/navigation"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const route = useRouter()
+
   const defaultValues = {
     email: "",
     password: "",
+  }
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await fetchPOST("login", data)
+
+      if (res?.success) {
+        route.push("/")
+        toast.success(res?.message)
+      } else {
+        if (res?.error) {
+          toast.warning(res?.error?.body?.message)
+        } else {
+          toast.warning(res?.message)
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message)
+    }
   }
 
   return (
@@ -36,7 +62,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <CusForm
-            onSubmit={async (data) => console.log(data)}
+            onSubmit={onSubmit}
             defaultValues={defaultValues}
           >
             <FieldGroup>

@@ -34,7 +34,9 @@ const CusUpload = ({
               value={value?.fileName}
               multiple={multiple}
               onChange={(e) =>
-                onChange(multiple ? e.target.files : e.target.files?.[0])
+                onChange(
+                  multiple ? e.target.files : e.target.files?.[0] ?? null
+                )
               }
             />
             {error && <p className="text-sm text-red-500">{error}</p>}

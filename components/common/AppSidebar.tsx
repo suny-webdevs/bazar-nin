@@ -52,10 +52,6 @@ const items_2 = [
 ]
 
 const AppSidebar = async () => {
-  const users = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
-    method: "GET",
-  })
-  console.log({ users })
   return (
     <Sidebar className="border-none">
       <SidebarContent>

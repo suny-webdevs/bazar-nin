@@ -6,10 +6,10 @@ const HomePage = () => {
   return (
     <div className="space-y-10">
       <div className="h-[60vh] grid grid-cols-1 lg:grid-cols-4 gap-5">
-        <div className="lg:col-span-3 h-full border rounded-xl bg-[url('/landingBanner.png')]"></div>
+        <div className="lg:col-span-3 h-full border rounded-3xl bg-[url('/landingBanner.png')]"></div>
         <div className="flex flex-col justify-center gap-5">
-          <div className="border h-full bg-amber-400 rounded-xl"></div>
-          <div className="border h-full bg-blue-400 rounded-xl"></div>
+          <div className="border h-full bg-amber-400 rounded-3xl"></div>
+          <div className="border h-full bg-blue-400 rounded-3xl"></div>
         </div>
       </div>
       <Service />

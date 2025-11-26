@@ -1,21 +1,21 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Outfit, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/lib/providers/ThemeProvider"
 import AppSidebar from "@/components/common/AppSidebar"
 import AppHeader from "@/components/common/AppHeader"
 import CusSidebarProvider from "@/lib/providers/CusSidebarProvider"
-import AuthProvider from "@/lib/providers/AuthProvider"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { Toaster } from "@/components/ui/sonner"
+import { getServerSession } from "@/lib/get-session"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetBrains_Mono = JetBrains_Mono({
+  variable: "--font-jet-brains-mono",
   subsets: ["latin"],
 })
 
@@ -29,31 +29,31 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession()
+
   return (
     <html
       lang="en"
       suppressHydrationWarning
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.variable} ${jetBrains_Mono.variable} antialiased`}
       >
-        <AuthProvider session={session!}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <CusSidebarProvider>
-              <AppSidebar />
-              <main className="w-full min-h-screen bg-card scroll-smooth">
-                <AppHeader />
-                <div className="container mx-auto p-2 py-7">{children}</div>
-              </main>
-            </CusSidebarProvider>
-          </ThemeProvider>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CusSidebarProvider>
+            <AppSidebar />
+            <main className="w-full min-h-screen bg-card scroll-smooth">
+              <AppHeader session={session} />
+              <div className="container mx-auto p-2 py-7">{children}</div>
+              <Toaster />
+            </main>
+          </CusSidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

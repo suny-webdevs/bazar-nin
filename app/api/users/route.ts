@@ -1,7 +1,8 @@
-import { User } from "@/lib/generated/prisma/client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import {
-  hashPassword,
+  // hashPassword,
   ResCreated,
   ResError,
   ResGlobal,
@@ -9,18 +10,27 @@ import {
   UploadFileToCloudinary,
 } from "@/utils"
 import HSC from "http-status-codes"
+import { headers } from "next/headers"
 
-export const POST = async (request: Request) => {
+export const POST = async (req: Request) => {
   try {
-    const formData = await request.formData()
+    const form = await req.formData()
 
-    const data = formData.get("data") as string
-    const file = formData.get("file") as File
+    const rawFile = form.get("file")
+    const file = rawFile instanceof File ? rawFile : null
 
-    const payload: Pick<
-      User,
-      "name" | "email" | "password" | "phone" | "image" | "imagePublicId"
-    > = JSON.parse(data)
+    const rawData = form.get("data")
+    if (!rawData || typeof rawData !== "string") {
+      return ResGlobal(400, false, "Invalid request payload")
+    }
+
+    let payload
+
+    try {
+      payload = JSON.parse(rawData)
+    } catch (e: any) {
+      return ResGlobal(400, false, "Invalid JSON body", e)
+    }
 
     const isUserExist = await prisma.user.findUnique({
       where: { email: payload.email },
@@ -29,21 +39,21 @@ export const POST = async (request: Request) => {
     if (isUserExist) {
       return ResGlobal(HSC.CONFLICT, false, "User already exist")
     }
-
-    const { public_id, secure_url } = await UploadFileToCloudinary(file)
-    const newHashedPassword = await hashPassword(payload.password)
-
-    const finalPayload = {
-      ...payload,
-      password: newHashedPassword,
-      image: secure_url || null,
-      imagePublicId: public_id || null,
+    if (file) {
+      const { secure_url } = await UploadFileToCloudinary(file)
+      payload.image = secure_url
     }
 
-    const res = await prisma.user.create({
-      data: finalPayload,
+    const res = await auth.api.signUpEmail({
+      body: {
+        name: payload.name,
+        email: payload.email,
+        password: payload.password,
+      },
+      headers: await headers(),
     })
-    return ResCreated("User created successfully", res)
+
+    return ResCreated("Successfully registered", res)
   } catch (error) {
     return ResError(error)
   }
