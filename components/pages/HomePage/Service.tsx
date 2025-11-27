@@ -1,7 +1,9 @@
+import { Card } from "@/components/ui/card"
+
 const Service = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-      <div className="border rounded-xl flex flex-col items-center gap-5 p-10">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-10">
+      <Card className="flex flex-col items-center justify-center px-5 py-8">
         <svg
           width="80px"
           height="80px"
@@ -54,8 +56,8 @@ const Service = () => {
           <span className="text-primary font-bold">+15000 products</span> to
           shop from
         </p>
-      </div>
-      <div className="border rounded-xl flex flex-col items-center gap-5 p-10">
+      </Card>
+      <Card className="flex flex-col items-center justify-center px-5 py-8">
         <svg
           width="80px"
           height="80px"
@@ -119,8 +121,8 @@ const Service = () => {
           <span className="text-primary font-bold">Pay after</span> receiving
           products
         </p>
-      </div>
-      <div className="border rounded-xl flex flex-col items-center gap-5 p-10">
+      </Card>
+      <Card className="flex flex-col items-center justify-center px-5 py-8">
         <svg
           width="80px"
           height="80px"
@@ -144,8 +146,8 @@ const Service = () => {
           Get your delivery within{" "}
           <span className="text-primary font-bold">1 hour</span>
         </p>
-      </div>
-      <div className="border rounded-xl flex flex-col items-center gap-5 p-10">
+      </Card>
+      <Card className="flex flex-col items-center justify-center px-5 py-8">
         <svg
           width="80px"
           height="80px"
@@ -184,7 +186,7 @@ const Service = () => {
           Get offers that{" "}
           <span className="text-primary font-bold">Save Money</span>
         </p>
-      </div>
+      </Card>
     </div>
   )
 }
