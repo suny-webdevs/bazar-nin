@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "./utils"
 
 export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const token = request.cookies.get("session-token")
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url))
+  }
 
+  const session = await getServerSession()
   if (!session) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
@@ -15,5 +16,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile", "/orders", "/payment-history", "/products"],
+  matcher: [
+    "/profile",
+    "/products",
+    "/orders",
+    "/payment-history",
+    "/payment-methods",
+  ],
 }

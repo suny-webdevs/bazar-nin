@@ -21,7 +21,7 @@ const uploadBuffer = async (buffer: Buffer, fileName?: string) => {
 export const UploadFileToCloudinary = async (file: File) => {
   const buffer = Buffer.from(await file.arrayBuffer())
   const upload = await uploadBuffer(buffer, file.name)
-  return { secure_url: upload.secure_url }
+  return { secure_url: upload.secure_url, public_id: upload.public_id }
 }
 
 export const UploadFilesToCloudinary = async (files: File[]) => {
@@ -30,8 +30,8 @@ export const UploadFilesToCloudinary = async (files: File[]) => {
       const buffer = Buffer.from(await file.arrayBuffer())
       const result = await uploadBuffer(buffer, file.name)
       return {
-        public_id: result.public_id,
         secure_url: result.secure_url,
+        public_id: result.public_id,
       }
     })
   )

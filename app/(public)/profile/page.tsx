@@ -1,16 +1,10 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { auth } from "@/lib/auth"
 import { Calendar, ShieldUser, User } from "lucide-react"
-import { headers } from "next/headers"
 import Image from "next/image"
-import { unauthorized } from "next/navigation"
 
 const ProfilePage = async () => {
-  const session = await auth.api.getSession({ headers: await headers() })
-  const user = session?.user
-
-  if (!user) unauthorized()
+  const user = { name: "Md Suny Shaikh", email: "suny@email.com" }
 
   return (
     <div>

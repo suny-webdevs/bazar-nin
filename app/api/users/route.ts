@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { auth } from "@/lib/auth"
+// import { User } from "@/lib/generated/prisma/client"
 import prisma from "@/lib/prisma"
 import {
-  // hashPassword,
+  hashPassword,
   ResCreated,
   ResError,
   ResGlobal,
@@ -10,7 +10,6 @@ import {
   UploadFileToCloudinary,
 } from "@/utils"
 import HSC from "http-status-codes"
-import { headers } from "next/headers"
 
 export const POST = async (req: Request) => {
   try {
@@ -39,20 +38,17 @@ export const POST = async (req: Request) => {
     if (isUserExist) {
       return ResGlobal(HSC.CONFLICT, false, "User already exist")
     }
+
     if (file) {
-      const { secure_url } = await UploadFileToCloudinary(file)
+      const { secure_url, public_id } = await UploadFileToCloudinary(file)
       payload.image = secure_url
+      payload.imagePublicId = public_id
     }
 
-    const res = await auth.api.signUpEmail({
-      body: {
-        name: payload.name,
-        email: payload.email,
-        password: payload.password,
-      },
-      headers: await headers(),
-    })
+    payload.password = await hashPassword(payload.password!)
 
+    const res = await prisma.user.create({ data: payload })
+    console.log({ serverRes: res })
     return ResCreated("Successfully registered", res)
   } catch (error) {
     return ResError(error)

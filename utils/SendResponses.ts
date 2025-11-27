@@ -20,7 +20,11 @@ export const ResCreated = async (
 
 export const ResError = async (error: any) => {
   return NextResponse.json(
-    { success: false, message: "Something went wrong", error },
+    {
+      success: false,
+      message: error?.message || "Something went wrong",
+      error,
+    },
     { status: HSC.INTERNAL_SERVER_ERROR }
   )
 }

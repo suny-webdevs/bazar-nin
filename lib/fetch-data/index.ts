@@ -40,13 +40,26 @@ export const fetchFormPOST = async (
       method: "POST",
       body: formData,
     })
-    console.log({ res })
+
     const data = await res.json()
-    console.log({ data })
+
     if (data?.success && reValidPath) {
       revalidatePath(reValidPath)
     }
 
+    return data
+  } catch (error: any) {
+    // throw new Error(error.message)
+    console.log(error)
+  }
+}
+
+export const fetchGET = async (url: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${url}`, {
+      method: "GET",
+    })
+    const data = await res.json()
     return data
   } catch (error: any) {
     // throw new Error(error.message)

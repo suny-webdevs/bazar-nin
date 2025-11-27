@@ -1,10 +1,5 @@
-import {
-  LayoutDashboard,
-  UserCircle,
-  GalleryHorizontalEnd,
-  NotebookPen,
-} from "lucide-react"
-
+"use client"
+import { UserCircle, GalleryHorizontalEnd } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +9,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
 import { Separator } from "../ui/separator"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 const items_1 = [
   {
@@ -30,28 +26,25 @@ const items_1 = [
 
 const items_2 = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
     title: "Profile",
     url: "/profile",
     icon: UserCircle,
   },
   {
-    title: "Projects",
-    url: "/projects",
-    icon: GalleryHorizontalEnd,
+    title: "Products",
+    url: "/products",
+    icon: UserCircle,
   },
   {
-    title: "Blogs",
-    url: "/blogs",
-    icon: NotebookPen,
+    title: "Orders",
+    url: "/orders",
+    icon: GalleryHorizontalEnd,
   },
 ]
 
-const AppSidebar = async () => {
+const AppSidebar = () => {
+  const pathname = usePathname()
+
   return (
     <Sidebar className="border-none">
       <SidebarContent>
@@ -60,7 +53,10 @@ const AppSidebar = async () => {
             <SidebarMenu>
               {items_1.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    isActive={pathname.includes(item.url)}
+                    asChild
+                  >
                     <Link href={item.url}>
                       <span>{item.title}</span>
                     </Link>
@@ -76,7 +72,10 @@ const AppSidebar = async () => {
             <SidebarMenu>
               {items_2.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    isActive={pathname.includes(item.url)}
+                    asChild
+                  >
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>

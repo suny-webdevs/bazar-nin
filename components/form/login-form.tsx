@@ -15,8 +15,8 @@ import CusForm from "./customForm/CusForm"
 import CusInput from "./customForm/CusInput"
 import { FieldValues, SubmitHandler } from "react-hook-form"
 import { toast } from "sonner"
-import { fetchPOST } from "@/lib/fetch-data"
 import { useRouter } from "next/navigation"
+import { authLogin } from "@/lib/actions/auth"
 
 export function LoginForm({
   className,
@@ -31,7 +31,7 @@ export function LoginForm({
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      const res = await fetchPOST("login", data)
+      const res = await authLogin("login", data)
 
       if (res?.success) {
         route.push("/")

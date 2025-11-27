@@ -16,7 +16,6 @@ import CusForm from "./customForm/CusForm"
 import CusInput from "./customForm/CusInput"
 import { toast } from "sonner"
 import { fetchFormPOST } from "@/lib/fetch-data"
-// import { signUp } from "@/lib/auth-client"
 import CusUpload from "./customForm/CusUpload"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { UserValidationSchema } from "@/lib/validation/UserValidation"
@@ -49,18 +48,14 @@ export function SignupForm({
 
       formData.append("data", JSON.stringify({ name, email, password, phone }))
 
-      // const signingUp = await signUp.email({ name, email, password })
-      // if (signingUp.error) {
-      //   return toast.warning(signingUp.error.message)
-      // }
-
       const res = await fetchFormPOST("users", formData)
-      console.log({ res })
+
       if (res?.success) {
         router.push("/login")
         toast.success(res?.message)
       } else {
-        toast.warning(res?.error?.body?.message)
+        if (res?.error) return toast.error(res?.error?.body?.message)
+        toast.warning(res?.message)
       }
     } catch (error: any) {
       toast.error(error.message)
@@ -125,8 +120,9 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <Link href="#">Terms of Service</Link> and{" "}
+        <Link href="#">Privacy Policy</Link>.
       </FieldDescription>
     </div>
   )

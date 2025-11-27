@@ -1,12 +1,6 @@
 import type { Metadata } from "next"
 import { Outfit, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "@/lib/providers/ThemeProvider"
-import AppSidebar from "@/components/common/AppSidebar"
-import AppHeader from "@/components/common/AppHeader"
-import CusSidebarProvider from "@/lib/providers/CusSidebarProvider"
-import { Toaster } from "@/components/ui/sonner"
-import { getServerSession } from "@/lib/get-session"
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -29,8 +23,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await getServerSession()
-
   return (
     <html
       lang="en"
@@ -39,21 +31,7 @@ export default async function RootLayout({
       <body
         className={`${outfit.variable} ${jetBrains_Mono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <CusSidebarProvider>
-            <AppSidebar />
-            <main className="w-full min-h-screen bg-card scroll-smooth">
-              <AppHeader session={session} />
-              <div className="container mx-auto p-2 py-7">{children}</div>
-              <Toaster />
-            </main>
-          </CusSidebarProvider>
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   )
