@@ -1,9 +1,10 @@
-import { Loader } from "lucide-react"
+import { Spinner } from "../ui/spinner"
 
 const Loading = () => {
   return (
-    <div className="absolute bg-primary-foreground w-full h-screen z-10">
-      <Loader className="size-10 animate-spin" />
+    <div className="flex items-center gap-2">
+      <Spinner className="size-7" />{" "}
+      <span className="text-xl font-semibold">Please wait...</span>
     </div>
   )
 }

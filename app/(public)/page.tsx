@@ -5,7 +5,7 @@ import { Search } from "lucide-react"
 
 const HomePage = () => {
   return (
-    <div className="space-y-20">
+    <section className="space-y-20">
       <div className="space-y-10">
         <div className="h-[60vh] grid grid-cols-1 lg:grid-cols-4 gap-5">
           <div className="lg:col-span-3 h-full border rounded-3xl bg-[url('/landingBanner.png')]">
@@ -39,7 +39,7 @@ const HomePage = () => {
       </div>
       <LatestProducts />
       <PopularProducts />
-    </div>
+    </section>
   )
 }
 

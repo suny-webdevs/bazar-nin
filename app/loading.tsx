@@ -1,7 +1,11 @@
 import Loading from "@/components/common/Loading"
 
 const LoadingPage = () => {
-  return <Loading />
+  return (
+    <div className="h-screen flex items-center justify-center">
+      <Loading />
+    </div>
+  )
 }
 
 export default LoadingPage

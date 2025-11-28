@@ -14,7 +14,7 @@ import { Button } from "../ui/button"
 import Link from "next/link"
 import { getServerSession } from "@/utils"
 import { authLogout } from "@/lib/actions/auth"
-import { Search } from "lucide-react"
+import { ResponsiveSearch } from "./ResponsiveSearchBar"
 
 const menuItems: { label: string; url: string }[] = [
   {
@@ -44,28 +44,20 @@ const AppHeader = async () => {
 
   return (
     <div className="px-5 py-3 grid grid-cols-3 items-center bg-primary text-white backdrop-blur-xl sticky top-0 left-0 z-50">
-      <div className="col-span-2 h-5 flex items-center space-x-4">
-        {/* Sidebar trigger */}
-        <SidebarTrigger />
-        {/* Header title */}
-        <Link
-          href={"/"}
-          className="text-3xl font-bold"
-        >
-          BazarNin
-        </Link>
-        {/* Header search bar */}
-        <div className="w-full lg:w-[38rem] xl:w-[50rem] md:flex items-center gap-2 bg-white rounded-full pr-1 hidden">
-          <input
-            type="search"
-            name="search"
-            placeholder="Search products (e.g. eggs, milk, potato)"
-            className="w-full px-5 py-2 text-gray-900 placeholder:text-gray-500 focus:ring-0 focus:outline-0"
-          />
-          <button className="px-5 py-1 cursor-pointer bg-primary hover:bg-primary/90 text-white rounded-full">
-            <Search />
-          </button>
+      <div className="col-span-2 h-5 flex items-center justify-between">
+        <div className="flex items-center gap-5">
+          {/* Sidebar trigger */}
+          <SidebarTrigger className="text-white" />
+          {/* Header title */}
+          <Link
+            href={"/"}
+            className="text-3xl font-bold"
+          >
+            BazarNin
+          </Link>
         </div>
+        {/* Header search bar */}
+        <ResponsiveSearch />
       </div>
       <div className="flex items-center justify-end gap-2">
         <ModeToggle />

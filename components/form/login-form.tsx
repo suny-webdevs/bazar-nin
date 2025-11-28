@@ -17,12 +17,15 @@ import { FieldValues, SubmitHandler } from "react-hook-form"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { authLogin } from "@/lib/actions/auth"
+import { useTransition } from "react"
+import { Spinner } from "../ui/spinner"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const route = useRouter()
+  const [loading, startTransition] = useTransition()
 
   const defaultValues = {
     email: "",
@@ -30,22 +33,24 @@ export function LoginForm({
   }
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      const res = await authLogin("login", data)
+    startTransition(async () => {
+      try {
+        const res = await authLogin("login", data)
 
-      if (res?.success) {
-        route.push("/")
-        toast.success(res?.message)
-      } else {
-        if (res?.error) {
-          toast.warning(res?.error?.body?.message)
+        if (res?.success) {
+          route.push("/")
+          toast.success(res?.message)
         } else {
-          toast.warning(res?.message)
+          if (res?.error) {
+            toast.warning(res?.error?.body?.message)
+          } else {
+            toast.warning(res?.message)
+          }
         }
+      } catch (error: any) {
+        toast.error(error.message)
       }
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    })
   }
 
   return (
@@ -78,7 +83,18 @@ export function LoginForm({
                 type="password"
                 placeholder="*********"
               />
-              <Button type="submit">Login</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <Spinner /> Logging in...
+                  </span>
+                ) : (
+                  "Login"
+                )}
+              </Button>
               <FieldDescription className="text-center">
                 Don&apos;t have an account?{" "}
                 <Link href="/register">Sign up</Link>
