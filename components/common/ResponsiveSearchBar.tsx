@@ -1,18 +1,16 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Search } from "lucide-react"
-// import { useSearch } from "@/lib/Context/SearchContext"
 
 export function ResponsiveSearch() {
   const [showSearch, setShowSearch] = useState(false)
 
   useEffect(() => {
-    const heroHeight = window.innerHeight // your hero = 100vh
+    const heroHeight = window.innerHeight
 
     const handleScroll = () => {
       const scrollY = window.scrollY
 
-      // Show when crossing 50% of hero height
       if (scrollY >= heroHeight / 2) {
         setShowSearch(true)
       } else {
@@ -25,9 +23,9 @@ export function ResponsiveSearch() {
   }, [])
 
   return (
-    <div>
+    <>
       {showSearch && (
-        <div className="w-full lg:w-[30rem] xl:w-[50rem] lg:flex items-center gap-2 bg-white rounded-full pr-1 hidden">
+        <div className="w-full lg:w-[30rem] xl:w-[50rem] lg:flex items-center gap-2 bg-white rounded-full pr-1">
           <input
             type="search"
             name="search"
@@ -39,6 +37,6 @@ export function ResponsiveSearch() {
           </button>
         </div>
       )}
-    </div>
+    </>
   )
 }

@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "./utils"
+import { verifyRefreshToken, verifySessionToken } from "./utils"
 
 export async function proxy(request: NextRequest) {
-  const token = request.cookies.get("session-token")
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url))
+  const sessionToken = request.cookies.get("session-token")?.value
+  const refreshToken = request.cookies.get("refresh-token")?.value
+  if (!sessionToken) {
+    return NextResponse.redirect(new URL("/", request.url))
   }
 
-  const session = await getServerSession()
-  if (!session) {
-    return NextResponse.redirect(new URL("/login", request.url))
+  const verifiedSession = verifySessionToken(sessionToken)
+
+  if (verifiedSession?.ok) {
+    return NextResponse.next()
   }
 
-  return NextResponse.next()
+  if (verifiedSession!.expired && refreshToken) {
+    const verifiedRefresh = verifyRefreshToken(refreshToken)
+
+    if (!verifiedRefresh!.ok) {
+      // refresh invalid → force logout
+      return NextResponse.redirect(new URL("/login", request.url))
+    }
+  }
+  return NextResponse.redirect(new URL("/", request.url))
 }
 
 export const config = {

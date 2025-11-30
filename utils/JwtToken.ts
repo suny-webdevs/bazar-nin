@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserRole } from "@/lib/generated/prisma/enums"
-import jwt from "jsonwebtoken"
+import jwt, { TokenExpiredError } from "jsonwebtoken"
 
 const JWT_SECRET_SESSION = process.env.JWT_SECRET_SESSION
 const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH
@@ -32,16 +33,38 @@ export const generateRefreshToken = (payload: JwtPayload): string => {
   })
 }
 
-export const verifySessionToken = <T = JwtPayload>(token: string): T => {
-  if (!JWT_SECRET_SESSION)
-    throw new Error("JWT_SECRET_SESSION is not configured")
+export const verifySessionToken = (
+  token: string
+):
+  | { ok: boolean; payload?: JwtPayload; expired?: boolean; error?: any }
+  | undefined => {
+  try {
+    if (!JWT_SECRET_REFRESH)
+      throw new Error("JWT_SECRET_REFRESH is not configured")
 
-  return jwt.verify(token, JWT_SECRET_SESSION) as T
+    const payload = jwt.verify(token, JWT_SECRET_REFRESH) as JwtPayload
+    return { ok: true, payload }
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return { ok: false, expired: true, error }
+    }
+  }
 }
 
-export const verifyRefreshToken = <T = JwtPayload>(token: string): T => {
-  if (!JWT_SECRET_REFRESH)
-    throw new Error("JWT_SECRET_REFRESH is not configured")
+export const verifyRefreshToken = (
+  token: string
+):
+  | { ok: boolean; payload?: JwtPayload; expired?: boolean; error?: any }
+  | undefined => {
+  try {
+    if (!JWT_SECRET_SESSION)
+      throw new Error("JWT_SECRET_SESSION is not configured")
 
-  return jwt.verify(token, JWT_SECRET_REFRESH) as T
+    const payload = jwt.verify(token, JWT_SECRET_SESSION) as JwtPayload
+    return { ok: true, payload }
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return { ok: false, expired: true, error }
+    }
+  }
 }

@@ -17,8 +17,10 @@ export const getServerSession = cache(
     const token = cookieStore.get("session-token")?.value
     if (token) {
       const jwtPayload = verifySessionToken(token!)
-      const user = await fetchGET(`users/${jwtPayload?.id}`)
-      return { session: jwtPayload, user }
+      if (jwtPayload?.ok) {
+        const user = await fetchGET(`users/${jwtPayload?.payload?.id}`)
+        return { session: jwtPayload, user }
+      }
     }
     return null
   }

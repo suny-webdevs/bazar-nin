@@ -15,6 +15,7 @@ import Link from "next/link"
 import { getServerSession } from "@/utils"
 import { authLogout } from "@/lib/actions/auth"
 import { ResponsiveSearch } from "./ResponsiveSearchBar"
+import { ShoppingBag } from "lucide-react"
 
 const menuItems: { label: string; url: string }[] = [
   {
@@ -43,20 +44,22 @@ const AppHeader = async () => {
   const session = await getServerSession()
 
   return (
-    <div className="px-5 py-3 grid grid-cols-3 items-center bg-primary text-white backdrop-blur-xl sticky top-0 left-0 z-50">
-      <div className="col-span-2 h-5 flex items-center justify-between">
+    <div className="px-5 py-3 grid grid-cols-2 lg:grid-cols-4 items-center bg-primary text-white backdrop-blur-xl sticky top-0 left-0 z-50">
+      <div className="h-5 flex items-center justify-between">
         <div className="flex items-center gap-5">
           {/* Sidebar trigger */}
           <SidebarTrigger className="text-white" />
           {/* Header title */}
           <Link
             href={"/"}
-            className="text-3xl font-bold"
+            className="text-3xl font-bold flex items-center gap-2"
           >
-            BazarNin
+            <ShoppingBag className="size-8" /> BazarNin
           </Link>
         </div>
         {/* Header search bar */}
+      </div>
+      <div className="lg:col-span-2 hidden lg:flex size-full items-center justify-center">
         <ResponsiveSearch />
       </div>
       <div className="flex items-center justify-end gap-2">
