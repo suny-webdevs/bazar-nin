@@ -8,19 +8,20 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  const verifiedSession = verifySessionToken(sessionToken)
+  const verifiedSession = verifySessionToken(sessionToken)!
 
   if (verifiedSession?.ok) {
     return NextResponse.next()
   }
 
-  if (verifiedSession!.expired && refreshToken) {
-    const verifiedRefresh = verifyRefreshToken(refreshToken)
+  if (verifiedSession?.expired && refreshToken) {
+    const verifiedRefresh = verifyRefreshToken(refreshToken)!
 
-    if (!verifiedRefresh!.ok) {
-      // refresh invalid → force logout
-      return NextResponse.redirect(new URL("/login", request.url))
+    if (!verifiedRefresh?.ok) {
+      return NextResponse.redirect(new URL("/", request.url))
     }
+
+    return NextResponse.next()
   }
   return NextResponse.redirect(new URL("/", request.url))
 }

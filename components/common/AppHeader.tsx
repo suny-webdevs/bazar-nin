@@ -17,28 +17,43 @@ import { authLogout } from "@/lib/actions/auth"
 import { ResponsiveSearch } from "./ResponsiveSearchBar"
 import { ShoppingBag } from "lucide-react"
 
-const menuItems: { label: string; url: string }[] = [
-  {
-    label: "Profile",
-    url: "/profile",
-  },
-  {
-    label: "Products",
-    url: "/products",
-  },
-  {
-    label: "Orders",
-    url: "/orders",
-  },
-  {
-    label: "Payment History",
-    url: "/payment-history",
-  },
-  {
-    label: "Payment Methods",
-    url: "/payment-methods",
-  },
-]
+const menuItems: {
+  admin: { label: string; url: string }[]
+  customer: { label: string; url: string }[]
+} = {
+  admin: [
+    {
+      label: "Profile",
+      url: "/profile",
+    },
+    {
+      label: "Products",
+      url: "/products",
+    },
+    {
+      label: "Orders",
+      url: "/orders",
+    },
+  ],
+  customer: [
+    {
+      label: "Profile",
+      url: "/profile",
+    },
+    {
+      label: "Orders",
+      url: "/orders",
+    },
+    {
+      label: "Payment History",
+      url: "/payment-history",
+    },
+    {
+      label: "Payment Methods",
+      url: "/payment-methods",
+    },
+  ],
+}
 
 const AppHeader = async () => {
   const session = await getServerSession()
@@ -57,8 +72,8 @@ const AppHeader = async () => {
             <ShoppingBag className="size-8" /> BazarNin
           </Link>
         </div>
-        {/* Header search bar */}
       </div>
+      {/* Header search bar */}
       <div className="lg:col-span-2 hidden lg:flex size-full items-center justify-center">
         <ResponsiveSearch />
       </div>
@@ -84,15 +99,25 @@ const AppHeader = async () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {menuItems.map((item, index) => (
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    key={index}
-                    asChild
-                  >
-                    <Link href={item.url}>{item.label}</Link>
-                  </DropdownMenuItem>
-                ))}
+                {session?.session?.role === "ADMIN"
+                  ? menuItems.admin.map((item, index) => (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        key={index}
+                        asChild
+                      >
+                        <Link href={item.url}>{item.label}</Link>
+                      </DropdownMenuItem>
+                    ))
+                  : menuItems.customer.map((item, index) => (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        key={index}
+                        asChild
+                      >
+                        <Link href={item.url}>{item.label}</Link>
+                      </DropdownMenuItem>
+                    ))}
                 <DropdownMenuItem onClick={authLogout}>Logout</DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>

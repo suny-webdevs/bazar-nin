@@ -13,6 +13,14 @@ export interface JwtPayload {
   role: UserRole
 }
 
+export type ReturnVerifyTokenType = {
+  ok: boolean
+  payload?: JwtPayload
+  expired?: boolean
+  error?: any
+  message?: string
+}
+
 export const generateSessionToken = (payload: JwtPayload): string => {
   if (!JWT_SECRET_SESSION)
     throw new Error("JWT_SECRET_SESSION is not configured")
@@ -35,27 +43,7 @@ export const generateRefreshToken = (payload: JwtPayload): string => {
 
 export const verifySessionToken = (
   token: string
-):
-  | { ok: boolean; payload?: JwtPayload; expired?: boolean; error?: any }
-  | undefined => {
-  try {
-    if (!JWT_SECRET_REFRESH)
-      throw new Error("JWT_SECRET_REFRESH is not configured")
-
-    const payload = jwt.verify(token, JWT_SECRET_REFRESH) as JwtPayload
-    return { ok: true, payload }
-  } catch (error) {
-    if (error instanceof TokenExpiredError) {
-      return { ok: false, expired: true, error }
-    }
-  }
-}
-
-export const verifyRefreshToken = (
-  token: string
-):
-  | { ok: boolean; payload?: JwtPayload; expired?: boolean; error?: any }
-  | undefined => {
+): ReturnVerifyTokenType | undefined => {
   try {
     if (!JWT_SECRET_SESSION)
       throw new Error("JWT_SECRET_SESSION is not configured")
@@ -64,7 +52,27 @@ export const verifyRefreshToken = (
     return { ok: true, payload }
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      return { ok: false, expired: true, error }
+      return { ok: false, expired: true, message: error?.message }
+    } else {
+      return { ok: false, error }
+    }
+  }
+}
+
+export const verifyRefreshToken = (
+  token: string
+): ReturnVerifyTokenType | undefined => {
+  try {
+    if (!JWT_SECRET_REFRESH)
+      throw new Error("JWT_SECRET_REFRESH is not configured")
+
+    const payload = jwt.verify(token, JWT_SECRET_REFRESH) as JwtPayload
+    return { ok: true, payload }
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return { ok: false, expired: true, message: error?.message }
+    } else {
+      return { ok: false, error }
     }
   }
 }
