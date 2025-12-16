@@ -7,8 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
 import Link from "next/link"
@@ -82,7 +80,7 @@ const AppHeader = async () => {
         {session?.user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="border">
+              <Avatar className="border cursor-pointer">
                 <AvatarImage
                   src={session?.user?.image as string}
                   alt={session?.user?.name?.charAt(0)}
@@ -96,8 +94,6 @@ const AppHeader = async () => {
               className="w-56"
               align="start"
             >
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 {session?.session?.role === "ADMIN"
                   ? menuItems.admin.map((item, index) => (
@@ -118,7 +114,12 @@ const AppHeader = async () => {
                         <Link href={item.url}>{item.label}</Link>
                       </DropdownMenuItem>
                     ))}
-                <DropdownMenuItem onClick={authLogout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer text-red-600"
+                  onClick={authLogout}
+                >
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

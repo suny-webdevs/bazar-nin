@@ -25,6 +25,8 @@ model User {
 
   addresses Address[]
   orders    Order[]
+
+  @@map("users")
 }
 
 enum UserRole {
